@@ -8,6 +8,6 @@ public class WelcomeController {
 
     @GetMapping("/")
     public String showWelcomeMessage(){
-        return "Welcome to this awesome REST web-service for a car-repair shop!";
+        return "This awesome (car-repair) REST web-service welcomes you! :)";
     }
 }

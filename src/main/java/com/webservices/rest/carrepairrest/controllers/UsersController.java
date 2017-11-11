@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
 import java.util.List;
 
@@ -35,7 +34,6 @@ public class UsersController {
         } catch (NumberFormatException nfex) {
             throw new UserIDException("Invalid User ID!");
         }
-
     }
 
     @PostMapping("/users")
@@ -56,10 +54,10 @@ public class UsersController {
     }
 
     @DeleteMapping("/users/{userID}")
-    public void deleteUser(@PathVariable String userID) throws UserNotFoundException, UserIDException {
+    public ResponseEntity deleteUser(@PathVariable String userID) throws UserNotFoundException, UserIDException {
         try {
             userService.deleteByUserID(Long.valueOf(userID));
-            ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (NumberFormatException nfex) {
             throw new UserIDException("Invalid User ID!");
         }

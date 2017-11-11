@@ -9,15 +9,14 @@ import com.webservices.rest.carrepairrest.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 
 @Service
-@Transactional
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -53,6 +52,7 @@ public class UserServiceImpl implements UserService {
         return save(userModel);
     }
 
+    @Transactional
     public void deleteByUserID(Long userID) throws UserNotFoundException {
         findByUserID(userID);
         userRepository.deleteByUserID(userID);
