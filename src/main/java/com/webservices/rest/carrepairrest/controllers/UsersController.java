@@ -1,6 +1,5 @@
 package com.webservices.rest.carrepairrest.controllers;
 
-import com.webservices.rest.carrepairrest.domain.User;
 import com.webservices.rest.carrepairrest.exceptions.user.DuplicateUserException;
 import com.webservices.rest.carrepairrest.exceptions.user.UserIDException;
 import com.webservices.rest.carrepairrest.exceptions.user.UserNotFoundException;
@@ -11,7 +10,6 @@ import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,7 +19,6 @@ import java.util.List;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 
 @RestController
 public class UsersController {
