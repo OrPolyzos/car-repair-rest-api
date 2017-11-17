@@ -1,9 +1,9 @@
-package com.webservices.rest.carrepairrest.exceptions;
+package com.webservices.rest.carrepairrest.exceptions.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Invalid User ID (path variable)")
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class UserIDException extends UserException {
 
     public UserIDException() {

@@ -2,8 +2,8 @@ package com.webservices.rest.carrepairrest.services;
 
 import com.webservices.rest.carrepairrest.converters.UserConverter;
 import com.webservices.rest.carrepairrest.domain.User;
-import com.webservices.rest.carrepairrest.exceptions.DuplicateUserException;
-import com.webservices.rest.carrepairrest.exceptions.UserNotFoundException;
+import com.webservices.rest.carrepairrest.exceptions.user.DuplicateUserException;
+import com.webservices.rest.carrepairrest.exceptions.user.UserNotFoundException;
 import com.webservices.rest.carrepairrest.model.UserModel;
 import com.webservices.rest.carrepairrest.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,22 +36,22 @@ public class UserServiceImpl implements UserService {
         if (user.isPresent()) {
             return UserConverter.convertToUserModel(user.get());
         } else {
-            throw new UserNotFoundException("User with UserID:" + userID + " was not found!");
+            throw new UserNotFoundException("User with UserID: '" + userID + "' was not found!");
         }
     }
 
     @Override
-    public User save(UserModel userModel) throws DuplicateUserException {
+    public UserModel save(UserModel userModel) throws DuplicateUserException {
         try {
-            return userRepository.save(UserConverter.convertToUser(userModel));
+            return UserConverter.convertToUserModel(userRepository.save(UserConverter.convertToUser(userModel)));
         } catch (DataIntegrityViolationException divex) {
-            throw new DuplicateUserException("User with Email: " + userModel.getEmail()
-                    + " or with SSN: " + userModel.getSsn() + " exists already!");
+            throw new DuplicateUserException("User with Email: '" + userModel.getEmail()
+                    + "' or with SSN: '" + userModel.getSsn() + "', exists already!");
         }
     }
 
     @Override
-    public User update(UserModel userModel) throws UserNotFoundException, DuplicateUserException {
+    public UserModel update(UserModel userModel) throws UserNotFoundException, DuplicateUserException {
         findByUserID(userModel.getUserID());
         return save(userModel);
     }

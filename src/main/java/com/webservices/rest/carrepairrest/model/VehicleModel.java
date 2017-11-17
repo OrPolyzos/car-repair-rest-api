@@ -1,5 +1,7 @@
 package com.webservices.rest.carrepairrest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
@@ -7,9 +9,11 @@ import javax.validation.constraints.Size;
 
 public class VehicleModel {
 
-    public interface VehicleInsert {}
+    public interface VehicleInsert {
+    }
 
-    public interface VehicleUpdate {}
+    public interface VehicleUpdate {
+    }
 
     @Null(groups = {VehicleInsert.class}, message = "VehicleID should be null when you create a new vehicle!")
     @NotNull(groups = {VehicleUpdate.class}, message = "VehicleID should not be null when updating a vehicle!")
@@ -29,14 +33,18 @@ public class VehicleModel {
     @Pattern(groups = {VehicleInsert.class, VehicleUpdate.class}, regexp = "^[0-9a-zA-Z]{1,32}", message = "Model should contain only alphanumericals!")
     private String model;
 
+    @JsonIgnore
+    private UserModel userModel;
+
     public VehicleModel() {
     }
 
-    public VehicleModel(Long vehicleID, String plateNumber, String brand, String model) {
+    public VehicleModel(Long vehicleID, String plateNumber, String brand, String model, UserModel userModel) {
         this.vehicleID = vehicleID;
         this.plateNumber = plateNumber;
         this.brand = brand;
         this.model = model;
+        this.userModel = userModel;
     }
 
     public Long getVehicleID() {
@@ -69,5 +77,13 @@ public class VehicleModel {
 
     public void setModel(String model) {
         this.model = model;
+    }
+
+    public UserModel getUserModel() {
+        return userModel;
+    }
+
+    public void setUserModel(UserModel userModel) {
+        this.userModel = userModel;
     }
 }

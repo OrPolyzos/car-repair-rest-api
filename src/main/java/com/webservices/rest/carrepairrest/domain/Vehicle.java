@@ -10,7 +10,7 @@ public class Vehicle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long vehicleID;
 
-    @Column(name = "PlateNumber", nullable = false)
+    @Column(name = "PlateNumber", nullable = false, unique = true)
     private String plateNumber;
 
     @Column(name = "Brand", nullable = false)
@@ -24,11 +24,12 @@ public class Vehicle {
 
     public Vehicle() {}
 
-    public Vehicle(Long vehicleID, String plateNumber, String brand, String model) {
+    public Vehicle(Long vehicleID, String plateNumber, String brand, String model, User user) {
         this.vehicleID = vehicleID;
         this.plateNumber = plateNumber;
         this.brand = brand;
         this.model = model;
+        this.user = user;
     }
 
     public Long getVehicleID() {

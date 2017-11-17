@@ -1,4 +1,4 @@
-package com.webservices.rest.carrepairrest.exceptions;
+package com.webservices.rest.carrepairrest.exceptions.user;
 
 class UserException extends Exception{
     UserException() {

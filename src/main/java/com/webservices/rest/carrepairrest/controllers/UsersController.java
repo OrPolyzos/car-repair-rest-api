@@ -1,9 +1,9 @@
 package com.webservices.rest.carrepairrest.controllers;
 
 import com.webservices.rest.carrepairrest.domain.User;
-import com.webservices.rest.carrepairrest.exceptions.DuplicateUserException;
-import com.webservices.rest.carrepairrest.exceptions.UserIDException;
-import com.webservices.rest.carrepairrest.exceptions.UserNotFoundException;
+import com.webservices.rest.carrepairrest.exceptions.user.DuplicateUserException;
+import com.webservices.rest.carrepairrest.exceptions.user.UserIDException;
+import com.webservices.rest.carrepairrest.exceptions.user.UserNotFoundException;
 import com.webservices.rest.carrepairrest.model.UserModel;
 import com.webservices.rest.carrepairrest.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +43,8 @@ public class UsersController {
         }
         Resource<UserModel> resource = new Resource<>(userModel);
         ControllerLinkBuilder linkTo;
+        linkTo = linkTo(methodOn(VehiclesController.class).getUserVehicles(userID));
+        resource.add(linkTo.withRel("user-vehicles"));
         linkTo = linkTo(methodOn(this.getClass()).getUsers());
         resource.add(linkTo.withRel("all-users"));
         return resource;
@@ -50,11 +52,11 @@ public class UsersController {
 
     @PostMapping("/users")
     public ResponseEntity saveUser(@Validated(UserModel.UserInsert.class) @RequestBody UserModel userModel) throws DuplicateUserException, UserNotFoundException {
-        User user = userService.save(userModel);
+        UserModel savedUserModel = userService.save(userModel);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{userID}")
-                .buildAndExpand(user.getUserID())
+                .buildAndExpand(savedUserModel.getUserID())
                 .toUri();
         return ResponseEntity.created(location).build();
     }
