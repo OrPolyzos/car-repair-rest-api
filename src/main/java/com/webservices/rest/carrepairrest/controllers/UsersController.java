@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -35,12 +36,15 @@ public class UsersController {
 
     @GetMapping("/users/{userID}")
     public Resource<UserModel> getUser(@PathVariable String userID) throws UserNotFoundException, UserIDException {
-        UserModel userModel;
+        Long userIDL;
         try {
-            userModel = userService.findByUserID(Long.valueOf(userID));
+            userIDL = Long.valueOf(userID);
         } catch (NumberFormatException nfex) {
-            throw new UserIDException("Invalid User ID!");
+            throw new UserIDException("'" + userID + "' is invalid User ID!");
         }
+
+        UserModel userModel = userService.findByUserID(userIDL);
+
         Resource<UserModel> resource = new Resource<>(userModel);
         ControllerLinkBuilder linkTo;
         linkTo = linkTo(methodOn(VehiclesController.class).getUserVehicles(userID));
@@ -51,7 +55,7 @@ public class UsersController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity saveUser(@Validated(UserModel.UserInsert.class) @RequestBody UserModel userModel) throws DuplicateUserException, UserNotFoundException {
+    public ResponseEntity saveUser(@Valid @RequestBody UserModel userModel) throws DuplicateUserException, UserNotFoundException {
         UserModel savedUserModel = userService.save(userModel);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -61,19 +65,27 @@ public class UsersController {
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping("/users")
-    public ResponseEntity updateUser(@Validated(UserModel.UserUpdate.class) @RequestBody UserModel userModel) throws DuplicateUserException, UserNotFoundException {
-        userService.update(userModel);
+    @PutMapping("/users/{userID}")
+    public ResponseEntity updateUser(@Valid @RequestBody UserModel userModel, @PathVariable String userID) throws DuplicateUserException, UserNotFoundException, UserIDException {
+        Long userIDL;
+        try {
+            userIDL = Long.valueOf(userID);
+        } catch (NumberFormatException nfex) {
+            throw new UserIDException("'" + userID + "' is invalid User ID!");
+        }
+        userService.update(userModel, userIDL);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/users/{userID}")
     public ResponseEntity deleteUser(@PathVariable String userID) throws UserNotFoundException, UserIDException {
+        Long userIDL;
         try {
-            userService.deleteByUserID(Long.valueOf(userID));
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            userIDL = Long.valueOf(userID);
         } catch (NumberFormatException nfex) {
-            throw new UserIDException("Invalid User ID!");
+            throw new UserIDException("'" + userID + "' is invalid User ID!");
         }
+        userService.deleteByUserID(userIDL);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

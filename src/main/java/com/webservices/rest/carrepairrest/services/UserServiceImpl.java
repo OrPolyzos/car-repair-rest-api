@@ -51,8 +51,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel update(UserModel userModel) throws UserNotFoundException, DuplicateUserException {
-        findByUserID(userModel.getUserID());
+    public UserModel update(UserModel userModel, Long userID) throws UserNotFoundException, DuplicateUserException {
+        findByUserID(userID);
+        userModel.setUserID(userID);
         return save(userModel);
     }
 

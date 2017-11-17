@@ -7,6 +7,7 @@ import com.webservices.rest.carrepairrest.domain.Vehicle;
 import com.webservices.rest.carrepairrest.exceptions.user.DuplicateUserException;
 import com.webservices.rest.carrepairrest.exceptions.user.UserNotFoundException;
 import com.webservices.rest.carrepairrest.exceptions.vehicle.DuplicateVehicleException;
+import com.webservices.rest.carrepairrest.exceptions.vehicle.NotAssociatedVehicleException;
 import com.webservices.rest.carrepairrest.exceptions.vehicle.VehicleNotFoundException;
 import com.webservices.rest.carrepairrest.model.UserModel;
 import com.webservices.rest.carrepairrest.model.VehicleModel;
@@ -55,6 +56,17 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
+    public VehicleModel findByVehicleIDAndUserID(Long vehicleID, Long userID) throws UserNotFoundException, NotAssociatedVehicleException {
+        User retrievedUser = UserConverter.convertToUser(userService.findByUserID(userID));
+        Optional<Vehicle> retrievedVehicle = vehicleRepository.findByVehicleIDAndUser(vehicleID, retrievedUser);
+        if (!retrievedVehicle.isPresent()) {
+            throw new NotAssociatedVehicleException("The user with User ID: '" + userID +
+                    "' does not own any vehicle with Vehicle ID: '" + vehicleID + "'!");
+        }
+        return VehicleConverter.convertToVehicleModel(retrievedVehicle.get());
+    }
+
+    @Override
     public VehicleModel save(VehicleModel vehicleModel, Long userID) throws DuplicateVehicleException, UserNotFoundException, DuplicateUserException {
         UserModel retrievedUserModel = userService.findByUserID(userID);
         vehicleModel.setUserModel(retrievedUserModel);
@@ -63,5 +75,12 @@ public class VehicleServiceImpl implements VehicleService {
         } catch (DataIntegrityViolationException divex) {
             throw new DuplicateVehicleException("Vehicle with Plate Number: '" + vehicleModel.getPlateNumber() + "', exists already!");
         }
+    }
+
+    @Override
+    public VehicleModel update(VehicleModel vehicleModel, Long userID, Long vehicleID) throws NotAssociatedVehicleException, UserNotFoundException, DuplicateUserException, DuplicateVehicleException {
+        findByVehicleIDAndUserID(vehicleID, userID);
+        vehicleModel.setVehicleID(vehicleID);
+        return save(vehicleModel, userID);
     }
 }

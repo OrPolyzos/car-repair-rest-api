@@ -15,7 +15,7 @@ public interface UserService {
 
     UserModel save(UserModel userModel) throws DuplicateUserException;
 
-    UserModel update(UserModel userModel) throws UserNotFoundException, DuplicateUserException;
+    UserModel update(UserModel userModel, Long userID) throws UserNotFoundException, DuplicateUserException;
 
     void deleteByUserID(Long userID) throws UserNotFoundException;
 }

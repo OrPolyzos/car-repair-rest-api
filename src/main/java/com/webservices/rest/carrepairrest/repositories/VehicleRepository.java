@@ -13,6 +13,8 @@ public interface VehicleRepository extends CrudRepository<Vehicle, Long> {
 
     Optional<Vehicle> findByVehicleID(Long vehicleID);
 
+    Optional<Vehicle> findByVehicleIDAndUser(Long vehicleID, User user);
+
     List<Vehicle> findByUser(User user);
 
     Vehicle save(Vehicle vehicle);
