@@ -7,13 +7,19 @@ import com.webservices.rest.carrepairrest.exceptions.UserNotFoundException;
 import com.webservices.rest.carrepairrest.model.UserModel;
 import com.webservices.rest.carrepairrest.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import java.net.URI;
 import java.util.List;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 
 @RestController
@@ -28,12 +34,18 @@ public class UsersController {
     }
 
     @GetMapping("/users/{userID}")
-    public UserModel getUser(@PathVariable String userID) throws UserNotFoundException, UserIDException {
+    public Resource<UserModel> getUser(@PathVariable String userID) throws UserNotFoundException, UserIDException {
+        UserModel userModel;
         try {
-            return userService.findByUserID(Long.valueOf(userID));
+            userModel = userService.findByUserID(Long.valueOf(userID));
         } catch (NumberFormatException nfex) {
             throw new UserIDException("Invalid User ID!");
         }
+        Resource<UserModel> resource = new Resource<>(userModel);
+        ControllerLinkBuilder linkTo;
+        linkTo = linkTo(methodOn(this.getClass()).getUsers());
+        resource.add(linkTo.withRel("all-users"));
+        return resource;
     }
 
     @PostMapping("/users")

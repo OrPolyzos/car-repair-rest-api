@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Override
     public List<UserModel> findAll() {
         return userRepository.findAll()
                 .stream()
@@ -29,6 +30,7 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public UserModel findByUserID(Long userID) throws UserNotFoundException {
         Optional<User> user = userRepository.findByUserID(userID);
         if (user.isPresent()) {
@@ -38,6 +40,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
     public User save(UserModel userModel) throws DuplicateUserException {
         try {
             return userRepository.save(UserConverter.convertToUser(userModel));
@@ -47,11 +50,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
     public User update(UserModel userModel) throws UserNotFoundException, DuplicateUserException {
         findByUserID(userModel.getUserID());
         return save(userModel);
     }
 
+    @Override
     @Transactional
     public void deleteByUserID(Long userID) throws UserNotFoundException {
         findByUserID(userID);

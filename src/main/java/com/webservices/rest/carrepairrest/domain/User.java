@@ -1,6 +1,7 @@
 package com.webservices.rest.carrepairrest.domain;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity(name = "Users")
 public class User {
@@ -21,6 +22,9 @@ public class User {
 
     @Column(name = "SSN", nullable = false, unique = true)
     private String ssn;
+
+    @OneToMany(mappedBy="user")
+    private List<Vehicle> vehicleList;
 
     public User() {
     }
@@ -71,5 +75,13 @@ public class User {
 
     public void setSsn(String ssn) {
         this.ssn = ssn;
+    }
+
+    public List<Vehicle> getVehicleList() {
+        return vehicleList;
+    }
+
+    public void setVehicleList(List<Vehicle> vehicleList) {
+        this.vehicleList = vehicleList;
     }
 }
