@@ -1,8 +1,8 @@
-target/
-
-.mvn
+### Maven ###
+.mvn/
 mvnw.cmd
 mvnw
+target/
 
 ### STS ###
 .apt_generated
