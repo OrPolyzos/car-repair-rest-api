@@ -6,8 +6,8 @@ import com.webservices.rest.carrepairrest.exceptions.user.UserNotFoundException;
 import com.webservices.rest.carrepairrest.model.UserModel;
 import com.webservices.rest.carrepairrest.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +17,8 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class UsersController {
@@ -32,7 +32,7 @@ public class UsersController {
     }
 
     @GetMapping("/users/{userID}")
-    public Resource<UserModel> getUser(@PathVariable String userID) throws UserNotFoundException, UserIDException {
+    public EntityModel<UserModel> getUser(@PathVariable String userID) throws UserNotFoundException, UserIDException {
         Long userIDL;
         try {
             userIDL = Long.valueOf(userID);
@@ -42,8 +42,8 @@ public class UsersController {
 
         UserModel userModel = userService.findByUserID(userIDL);
 
-        Resource<UserModel> resource = new Resource<>(userModel);
-        ControllerLinkBuilder linkTo;
+        EntityModel<UserModel> resource = new EntityModel<>(userModel);
+        WebMvcLinkBuilder linkTo;
         linkTo = linkTo(methodOn(VehiclesController.class).getUserVehicles(userID));
         resource.add(linkTo.withRel("user-vehicles"));
         linkTo = linkTo(methodOn(this.getClass()).getUsers());
