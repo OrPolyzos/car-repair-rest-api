@@ -1,4 +1,4 @@
-package com.webservices.rest.carrepairrest.services;
+package com.webservices.rest.carrepairrest.services.impl;
 
 import com.webservices.rest.carrepairrest.converters.UserConverter;
 import com.webservices.rest.carrepairrest.domain.User;
@@ -6,7 +6,8 @@ import com.webservices.rest.carrepairrest.exceptions.user.DuplicateUserException
 import com.webservices.rest.carrepairrest.exceptions.user.UserNotFoundException;
 import com.webservices.rest.carrepairrest.model.UserModel;
 import com.webservices.rest.carrepairrest.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.webservices.rest.carrepairrest.services.UserService;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +20,11 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    final private UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
 
     @Override
     public List<UserModel> findAll() {

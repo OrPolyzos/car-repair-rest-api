@@ -5,7 +5,7 @@ import com.webservices.rest.carrepairrest.exceptions.user.UserIDException;
 import com.webservices.rest.carrepairrest.exceptions.user.UserNotFoundException;
 import com.webservices.rest.carrepairrest.model.UserModel;
 import com.webservices.rest.carrepairrest.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
@@ -23,8 +23,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 public class UsersController {
 
-    @Autowired
-    private UserService userService;
+
+    final private UserService userService;
+
+    UsersController(UserService userService){
+        this.userService = userService;
+    }
 
     @GetMapping("/users")
     public List<UserModel> getUsers() {
@@ -52,7 +56,7 @@ public class UsersController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity saveUser(@Valid @RequestBody UserModel userModel) throws DuplicateUserException, UserNotFoundException {
+    public ResponseEntity saveUser(@Valid @RequestBody UserModel userModel) throws DuplicateUserException {
         UserModel savedUserModel = userService.save(userModel);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

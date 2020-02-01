@@ -9,7 +9,7 @@ import com.webservices.rest.carrepairrest.exceptions.vehicle.VehicleIDException;
 import com.webservices.rest.carrepairrest.exceptions.vehicle.VehicleNotFoundException;
 import com.webservices.rest.carrepairrest.model.VehicleModel;
 import com.webservices.rest.carrepairrest.services.VehicleService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
@@ -27,11 +27,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 public class VehiclesController {
 
-    @Autowired
-    private UsersController usersController;
 
-    @Autowired
-    private VehicleService vehicleService;
+    final private VehicleService vehicleService;
+
+    VehiclesController(VehicleService vehicleService){
+        this.vehicleService = vehicleService;
+    }
 
     @GetMapping("/vehicles")
     public List<VehicleModel> getVehicles() {

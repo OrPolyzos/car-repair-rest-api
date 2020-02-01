@@ -1,10 +1,9 @@
-package com.webservices.rest.carrepairrest.services;
+package com.webservices.rest.carrepairrest.services.impl;
 
 import com.webservices.rest.carrepairrest.converters.UserConverter;
 import com.webservices.rest.carrepairrest.converters.VehicleConverter;
 import com.webservices.rest.carrepairrest.domain.User;
 import com.webservices.rest.carrepairrest.domain.Vehicle;
-import com.webservices.rest.carrepairrest.exceptions.user.DuplicateUserException;
 import com.webservices.rest.carrepairrest.exceptions.user.UserNotFoundException;
 import com.webservices.rest.carrepairrest.exceptions.vehicle.DuplicateVehicleException;
 import com.webservices.rest.carrepairrest.exceptions.vehicle.NotAssociatedVehicleException;
@@ -12,7 +11,9 @@ import com.webservices.rest.carrepairrest.exceptions.vehicle.VehicleNotFoundExce
 import com.webservices.rest.carrepairrest.model.UserModel;
 import com.webservices.rest.carrepairrest.model.VehicleModel;
 import com.webservices.rest.carrepairrest.repositories.VehicleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.webservices.rest.carrepairrest.services.UserService;
+import com.webservices.rest.carrepairrest.services.VehicleService;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +24,14 @@ import java.util.stream.Collectors;
 @Service
 public class VehicleServiceImpl implements VehicleService {
 
-    @Autowired
-    private VehicleRepository vehicleRepository;
+    final private VehicleRepository vehicleRepository;
 
-    @Autowired
-    private UserService userService;
+    final private UserService userService;
+
+    public VehicleServiceImpl(VehicleRepository vehicleRepository, UserService userService){
+        this.vehicleRepository = vehicleRepository;
+        this.userService = userService;
+    }
 
     @Override
     public List<VehicleModel> findAll() {
@@ -67,7 +71,7 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public VehicleModel save(VehicleModel vehicleModel, Long userID) throws DuplicateVehicleException, UserNotFoundException, DuplicateUserException {
+    public VehicleModel save(VehicleModel vehicleModel, Long userID) throws DuplicateVehicleException, UserNotFoundException {
         UserModel retrievedUserModel = userService.findByUserID(userID);
         vehicleModel.setUserModel(retrievedUserModel);
         try {
@@ -78,7 +82,7 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public VehicleModel update(VehicleModel vehicleModel, Long userID, Long vehicleID) throws NotAssociatedVehicleException, UserNotFoundException, DuplicateUserException, DuplicateVehicleException {
+    public VehicleModel update(VehicleModel vehicleModel, Long userID, Long vehicleID) throws NotAssociatedVehicleException, UserNotFoundException, DuplicateVehicleException {
         findByVehicleIDAndUserID(vehicleID, userID);
         vehicleModel.setVehicleID(vehicleID);
         return save(vehicleModel, userID);
