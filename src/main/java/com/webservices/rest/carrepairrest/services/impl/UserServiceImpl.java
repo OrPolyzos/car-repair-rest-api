@@ -1,5 +1,6 @@
 package com.webservices.rest.carrepairrest.services.impl;
 
+import com.webservices.rest.carrepairrest.converters.Mappable;
 import com.webservices.rest.carrepairrest.converters.UserConverter;
 import com.webservices.rest.carrepairrest.domain.User;
 import com.webservices.rest.carrepairrest.exceptions.user.DuplicateUserException;
@@ -20,17 +21,20 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
+    final Mappable<User, UserModel> mapper;
+
     final private UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository){
+    public UserServiceImpl(UserRepository userRepository, Mappable<User, UserModel> mapper){
         this.userRepository = userRepository;
+        this.mapper = mapper;
     }
 
     @Override
     public List<UserModel> findAll() {
         return userRepository.findAll()
                 .stream()
-                .map(UserConverter::convertToUserModel)
+                .map(mapper::convertToModel)
                 .collect(Collectors.toList());
     }
 
@@ -38,7 +42,7 @@ public class UserServiceImpl implements UserService {
     public UserModel findByUserID(Long userID) throws UserNotFoundException {
         Optional<User> user = userRepository.findByUserID(userID);
         if (user.isPresent()) {
-            return UserConverter.convertToUserModel(user.get());
+            return mapper.convertToModel(user.get());
         } else {
             throw new UserNotFoundException("User with UserID: '" + userID + "' was not found!");
         }
@@ -47,7 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserModel save(UserModel userModel) throws DuplicateUserException {
         try {
-            return UserConverter.convertToUserModel(userRepository.save(UserConverter.convertToUser(userModel)));
+            return mapper.convertToModel(userRepository.save(mapper.convertToEntity(userModel)));
         } catch (DataIntegrityViolationException divex) {
             throw new DuplicateUserException("User with Email: '" + userModel.getEmail()
                     + "' or with SSN: '" + userModel.getSsn() + "', exists already!");
