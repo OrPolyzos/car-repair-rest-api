@@ -9,9 +9,9 @@ import com.webservices.rest.carrepairrest.exceptions.vehicle.VehicleIDException;
 import com.webservices.rest.carrepairrest.exceptions.vehicle.VehicleNotFoundException;
 import com.webservices.rest.carrepairrest.model.VehicleModel;
 import com.webservices.rest.carrepairrest.services.VehicleService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,17 +21,18 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class VehiclesController {
 
-    @Autowired
-    private UsersController usersController;
 
-    @Autowired
-    private VehicleService vehicleService;
+    final private VehicleService vehicleService;
+
+    VehiclesController(VehicleService vehicleService){
+        this.vehicleService = vehicleService;
+    }
 
     @GetMapping("/vehicles")
     public List<VehicleModel> getVehicles() {
@@ -39,7 +40,7 @@ public class VehiclesController {
     }
 
     @GetMapping("/vehicles/{vehicleID}")
-    public Resource<VehicleModel> getVehicle(@PathVariable String vehicleID) throws VehicleNotFoundException, VehicleIDException {
+    public EntityModel<VehicleModel> getVehicle(@PathVariable String vehicleID) throws VehicleNotFoundException, VehicleIDException {
         Long vehicleIDL;
         try {
             vehicleIDL = Long.valueOf(vehicleID);
@@ -49,8 +50,8 @@ public class VehiclesController {
 
         VehicleModel vehicleModel = vehicleService.findByVehicleID(vehicleIDL);
 
-        Resource<VehicleModel> resource = new Resource<>(vehicleModel);
-        ControllerLinkBuilder linkTo;
+        EntityModel<VehicleModel> resource = new EntityModel<>(vehicleModel);
+        WebMvcLinkBuilder linkTo;
         linkTo = linkTo(methodOn(this.getClass()).getVehicles());
         resource.add(linkTo.withRel("all-vehicles"));
         return resource;

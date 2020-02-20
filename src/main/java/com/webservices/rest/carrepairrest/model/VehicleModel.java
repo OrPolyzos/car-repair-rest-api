@@ -1,12 +1,15 @@
 package com.webservices.rest.carrepairrest.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+@NoArgsConstructor @Data
 public class VehicleModel {
 
     @Null(message = "VehicleID should be null!")
@@ -29,9 +32,6 @@ public class VehicleModel {
     @JsonIgnore
     private UserModel userModel;
 
-    public VehicleModel() {
-    }
-
     public VehicleModel(Long vehicleID, String plateNumber, String brand, String model, UserModel userModel) {
         this.vehicleID = vehicleID;
         this.plateNumber = plateNumber;
@@ -40,43 +40,4 @@ public class VehicleModel {
         this.userModel = userModel;
     }
 
-    public Long getVehicleID() {
-        return vehicleID;
-    }
-
-    public void setVehicleID(Long vehicleID) {
-        this.vehicleID = vehicleID;
-    }
-
-    public String getPlateNumber() {
-        return plateNumber;
-    }
-
-    public void setPlateNumber(String plateNumber) {
-        this.plateNumber = plateNumber;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public UserModel getUserModel() {
-        return userModel;
-    }
-
-    public void setUserModel(UserModel userModel) {
-        this.userModel = userModel;
-    }
 }

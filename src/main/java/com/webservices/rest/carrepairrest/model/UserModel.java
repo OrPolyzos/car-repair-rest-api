@@ -1,7 +1,11 @@
 package com.webservices.rest.carrepairrest.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.validation.constraints.*;
 
+@NoArgsConstructor @Data
 public class UserModel {
 
     @Null(message = "UserID should be null when you create a new user!")
@@ -28,8 +32,7 @@ public class UserModel {
     @Pattern(regexp = "^[0-9]{9}", message = "SSN should contain only digits!")
     private String ssn;
 
-    public UserModel() {
-    }
+
 
     public UserModel(Long userID, String firstName, String lastName, String email, String ssn) {
         this.userID = userID;
@@ -39,43 +42,4 @@ public class UserModel {
         this.ssn = ssn;
     }
 
-    public Long getUserID() {
-        return userID;
-    }
-
-    public void setUserID(Long userID) {
-        this.userID = userID;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getSsn() {
-        return ssn;
-    }
-
-    public void setSsn(String ssn) {
-        this.ssn = ssn;
-    }
 }
